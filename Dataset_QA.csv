@@ -1,0 +1,6 @@
+firstname,lastname,totalprice,depositpaid,checkin,checkout,additionalneeds
+Ziad,Uthso,5534,true,2026-07-31,2026-08-01,Pool
+Tasnim,Fahim,6453,false,2026-08-01,2026-08-02,Breakfast
+Jubayer,Maruf,2345,true,2026-08-02,2026-08-03,SPA
+Lutfor,Rahman,5476,false,2026-08-03,2026-08-04,Gym
+Asma,Khanam,1234,false,2026-08-04,2026-08-05,Massage
