@@ -1,0 +1,1232 @@
+{
+  "info": {
+    "_postman_id": "37e56d16-7bd2-48e1-812e-70ab411284fc",
+    "name": "DDT_HotelBooking",
+    "description": "This collection is designed to test the Hotel Booking API through a complete booking lifecycle using data-driven values stored in environment variables.\n\nIt includes requests to:\n- retrieve booking IDs\n- create a new booking\n- generate an authentication token\n- fully update an existing booking\n- partially update an existing booking\n- delete a booking\n- verify the results of create, update, partial update, and delete operations with follow-up GET requests\n\nThe collection is structured to support end-to-end API validation by reusing dynamic values such as `{{base_url}}`, `{{My_Booking}}`, and other booking-related variables from the active environment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56427837",
+    "_collection_link": "https://go.postman.co/collection/56427837-37e56d16-7bd2-48e1-812e-70ab411284fc?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "BookingIDs",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var responseBody = pm.response.json();\r",
+              "// Assertion for the status code\r",
+              "pm.test(\"Verify that the response Status code is showing 200 or not\", function () { pm.expect(pm.response.code).to.eql(200); });\r",
+              "\r",
+              "// Assertion for the response time\r",
+              "pm.test(\"Verify that the response time is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseTime).to.be.below(20000); });\r",
+              "\r",
+              "// Assertion for the response size\r",
+              "pm.test(\"Verify that the response size is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseSize).to.be.below(200000); });\r",
+              "\r",
+              "// Assertion for the data format\r",
+              "pm.test(\"Verify that the data format is JSON\", function () \r",
+              "{  \r",
+              "    pm.response.to.be.json; \r",
+              "    \r",
+              "});\r",
+              "\r",
+              "// Assertion for the booking id available or not\r",
+              "pm.test(\"Verify that the booking id is available or not\", function () {\r",
+              "var exists= responseBody.some(item=> item.bookingid === 10);\r",
+              "pm.expect(exists).to.be.true; // Check if the booking id is present in the response body\r",
+              "\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/booking",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateBooking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// for generate the firstname\r",
+              "var firstName= pm.iterationData.get(\"firstname\");\r",
+              "pm.environment.set(\"FName\", firstName);\r",
+              "\r",
+              "// for generate the lastname\r",
+              "var lastName= pm.iterationData.get(\"lastname\");\r",
+              "pm.environment.set(\"LName\", lastName);\r",
+              "\r",
+              "// for generate the Price\r",
+              "var price= pm.iterationData.get(\"totalprice\");\r",
+              "pm.environment.set(\"CPrice\", price);\r",
+              "\r",
+              "// for generate the depositpaid\r",
+              "var depositPaid=pm.iterationData.get(\"depositpaid\");\r",
+              "pm.environment.set(\"TDepositPaid\", depositPaid);\r",
+              "\r",
+              "// for generate the checkindate\r",
+              "//var checkin = require ('moment');\r",
+              "//console.log(checkin);\r",
+              "\r",
+              "//var checkindate= checkin().format('YYYY-MM-DD');\r",
+              "//console.log(checkindate);\r",
+              "//pm.environment.set(\"CInDate\", checkindate);\r",
+              "\r",
+              "// for generate the checkoutdate\r",
+              "//var checkout = require ('moment');\r",
+              "//console.log(checkout);\r",
+              "\r",
+              "//var checkoutdate= checkout().add(4,'d').format('YYYY-MM-DD');\r",
+              "//console.log(checkoutdate);\r",
+              "//pm.environment.set(\"COutDate\", checkoutdate);\r",
+              "\r",
+              "// for generate the checkin date\r",
+              "\r",
+              "var checkinDate= pm.iterationData.get(\"checkin\");\r",
+              "pm.environment.set(\"CInDate\", checkinDate);\r",
+              "\r",
+              "// for generate the checkout date\r",
+              "\r",
+              "var checkoutDate= pm.iterationData.get(\"checkout\");\r",
+              "pm.environment.set(\"COutDate\", checkoutDate);\r",
+              "\r",
+              "// for generate the additionalneeds\r",
+              "var additionalNeeds= pm.iterationData.get (\"additionalneeds\");\r",
+              "pm.environment.set(\"ANeeds\", additionalNeeds);\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var responseBody= pm.response.json();",
+              "pm.environment.set (\"My_Booking\", responseBody.bookingid);",
+              "",
+              "// Asortion for the status code",
+              "pm.test(\"Verify that the response Status code is showing 200 or not\", function () { pm.expect(pm.response.code).to.eql(201); });",
+              "",
+              "// Asortion for the response time",
+              "pm.test(\"Verify that the response time is expected or not\", function () ",
+              "{ pm.expect(pm.response.responseTime).to.be.below(2000); });",
+              "",
+              "// Asortion for the response size",
+              "pm.test(\"Verify that the response size is expected or not\", function () ",
+              "{ pm.expect(pm.response.responseSize).to.be.below(1000); });",
+              "",
+              "// Asortion for the firstname",
+              "pm.test(\"Verify that the firstname is expected or not\", function () ",
+              "{ var responseBody= pm.response.json();",
+              "    pm.expect(pm.environment.get('FName')).to.equal(responseBody.booking.firstname); });",
+              "",
+              "// Asortion for the lastname",
+              "pm.test(\"Verify that the lastname is expected or not\", function () ",
+              "{ var responseBody= pm.response.json();",
+              "    pm.expect(pm.environment.get('LName')).to.equal(responseBody.booking.lastname); });",
+              "",
+              "// Asortion for the price",
+              "pm.test(\"Verify that the price is expected or not\", function () ",
+              "{ var responseBody= pm.response.json();",
+              "    pm.expect(Number(pm.environment.get('CPrice'))).to.equal(Number(responseBody.booking.totalprice)); });",
+              "",
+              "// Asortion for the depositpaid",
+              "pm.test(\"Verify that the depositpaid is expected or not\", function () ",
+              "{ var responseBody= pm.response.json();",
+              "    pm.expect(String(pm.environment.get('TDepositPaid')).toLowerCase() === 'true').to.equal(Boolean(responseBody.booking.depositpaid)); });",
+              "",
+              "// Assertion for deposit paid",
+              "//pm.test(\"Verify that deposit paid is expected or not\", function () {",
+              "  //  const expectedDepositPaid =",
+              "    //    pm.environment.get(\"TDepositPaid\").toLowerCase() === \"true\";",
+              "//",
+              "  //  pm.expect(responseBody.depositpaid).to.equal(expectedDepositPaid);",
+              "// });",
+              "",
+              "// Assertion for check-in date",
+              "pm.test(\"Verify that the check-in date is expected or not\", function () {",
+              "    var responseBody= pm.response.json();",
+              "    pm.expect(responseBody.booking.bookingdates.checkin)",
+              "        .to.equal(pm.environment.get(\"CInDate\"));",
+              "});",
+              "",
+              "// Assertion for check-out date",
+              "pm.test(\"Verify that the check-out date is expected or not\", function () {",
+              "    var responseBody= pm.response.json();",
+              "    pm.expect(responseBody.booking.bookingdates.checkout)",
+              "       .to.equal(pm.environment.get(\"COutDate\"));",
+              "});",
+              "",
+              "// Assertion for the complete booking dates ",
+              "// pm.test(\"Verify that booking dates are expected or not\", function () {",
+              "  //  pm.expect(responseBody.bookingdates).to.deep.equal({",
+              "   //     checkin: pm.environment.get(\"CInDate\"),",
+              "  //      checkout: pm.environment.get(\"COutDate\")",
+              "  //  });",
+              "// });",
+              "",
+              "// Assertion for additional needs",
+              "pm.test(\"Verify that additional needs is expected or not\", function () {",
+              "    var responseBody= pm.response.json();",
+              "    pm.expect(responseBody.booking.additionalneeds)",
+              "        .to.equal(pm.environment.get(\"ANeeds\"));",
+              "});",
+              "",
+              "// Assertion for the data format",
+              "pm.test(\"Verify that the data format is JSON\", function () ",
+              "{  ",
+              "    pm.response.to.be.json; ",
+              "    ",
+              "    });"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"firstname\" : \"{{FName}}\",\r\n    \"lastname\" : \"{{LName}}\",\r\n    \"totalprice\" : {{CPrice}},\r\n    \"depositpaid\" : {{TDepositPaid}},\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"{{CInDate}}\",\r\n        \"checkout\" : \"{{COutDate}}\"\r\n    },\r\n    \"additionalneeds\" : \"{{ANeeds}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/booking",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetCreatedBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "\r",
+              "// Asortion for the status code\r",
+              "pm.test(\"Verify that the response Status code is showing 200 or not\", function () { pm.expect(pm.response.code).to.eql(200); });\r",
+              "\r",
+              "// Asortion for the response time\r",
+              "pm.test(\"Verify that the response time is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseTime).to.be.below(2000); });\r",
+              "\r",
+              "// Asortion for the response size\r",
+              "pm.test(\"Verify that the response size is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseSize).to.be.below(1000); });\r",
+              "\r",
+              "// Asortion for the firstname\r",
+              "\r",
+              "pm.test(\"Verify that the firstname is expected or not\", function () \r",
+              "\r",
+              "{ \r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(pm.environment.get('FName')).to.equal(responseBody.firstname); });\r",
+              "\r",
+              "// Asortion for the lastname\r",
+              "pm.test(\"Verify that the lastname is expected or not\", function () \r",
+              "{ \r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(pm.environment.get('LName')).to.equal(responseBody.lastname); });\r",
+              "\r",
+              "// Asortion for the price\r",
+              "pm.test(\"Verify that the price is expected or not\", function () \r",
+              "{ \r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(Number(pm.environment.get('CPrice'))).to.equal(Number(responseBody.totalprice)); });\r",
+              "\r",
+              "// Asortion for the depositpaid\r",
+              "pm.test(\"Verify that the depositpaid is expected or not\", function () \r",
+              "{ \r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(String(pm.environment.get('TDepositPaid')).toLowerCase() === 'true').to.equal(Boolean(responseBody.depositpaid)); });\r",
+              "\r",
+              "// Assertion for deposit paid\r",
+              "//pm.test(\"Verify that deposit paid is expected or not\", function () {\r",
+              "  //  const expectedDepositPaid =\r",
+              "    //    pm.environment.get(\"TDepositPaid\").toLowerCase() === \"true\";\r",
+              "//\r",
+              "  //  pm.expect(responseBody.depositpaid).to.equal(expectedDepositPaid);\r",
+              "// });\r",
+              "\r",
+              "// Assertion for check-in date\r",
+              "pm.test(\"Verify that the check-in date is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.bookingdates.checkin)\r",
+              "        .to.equal(pm.environment.get(\"CInDate\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for check-out date\r",
+              "pm.test(\"Verify that the check-out date is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.bookingdates.checkout)\r",
+              "       .to.equal(pm.environment.get(\"COutDate\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for the complete booking dates \r",
+              "// pm.test(\"Verify that booking dates are expected or not\", function () {\r",
+              "  //  pm.expect(responseBody.bookingdates).to.deep.equal({\r",
+              "   //     checkin: pm.environment.get(\"CInDate\"),\r",
+              "  //      checkout: pm.environment.get(\"COutDate\")\r",
+              "  //  });\r",
+              "// });\r",
+              "\r",
+              "// Assertion for additional needs\r",
+              "pm.test(\"Verify that additional needs is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.additionalneeds)\r",
+              "        .to.equal(pm.environment.get(\"ANeeds\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for the data format\r",
+              "pm.test(\"Verify that the data format is JSON\", function () \r",
+              "{  \r",
+              "    pm.response.to.be.json; \r",
+              "    \r",
+              "    });"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/booking/{{My_Booking}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{My_Booking}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TokenCreate",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var responseBody = pm.response.json(); // Parse the JSON response body\r",
+              "pm.environment.set(\"auth_token\", responseBody.token);\r",
+              "\r",
+              "// Asortion for the status code\r",
+              "pm.test(\"Verify that the response Status code is showing 200 or not\", function () { pm.expect(pm.response.code).to.eql(201); });\r",
+              "\r",
+              "// Asortion for the response time\r",
+              "pm.test(\"Verify that the response time is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseTime).to.be.below(2000); });\r",
+              "\r",
+              "// Asortion for the response size\r",
+              "pm.test(\"Verify that the response size is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseSize).to.be.below(1000); });\r",
+              "\r",
+              "// Assertion that the token is exists\r",
+              "pm.test(\"Token Validation 1: Is Exists\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.token).to.exist;\r",
+              "});\r",
+              "\r",
+              "// Assertion that the token is not empty\r",
+              "pm.test(\"Token Validation 2: Not Blank\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.token).to.not.be.empty;\r",
+              "});\r",
+              "\r",
+              "// Assertion that the token is string\r",
+              "pm.test(\"Token Validation 2: Is String\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.token).to.be.a('String');\r",
+              "});\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "packages": {},
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\" : \"admin\",\r\n    \"password\" : \"password123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateBooking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// for generate the firstname\r",
+              "var firstname= pm.variables.replaceIn (\"{{$randomFirstName}}\");\r",
+              "pm.environment.set(\"FName\", firstname);\r",
+              "\r",
+              "// for generate the lastname\r",
+              "var lastname= pm.variables.replaceIn (\"{{$randomLastName}}\");\r",
+              "pm.environment.set(\"LName\", lastname);\r",
+              "\r",
+              "// for generate the Price\r",
+              "var price= pm.variables.replaceIn (\"{{$randomInt}}\");\r",
+              "pm.environment.set(\"CPrice\", price);\r",
+              "\r",
+              "// for generate the depositpaid\r",
+              "var depositpaid=pm.variables.replaceIn (\"{{$randomBoolean}}\");\r",
+              "pm.environment.set(\"TDepositPaid\", depositpaid);\r",
+              "\r",
+              "// for generate the checkindate\r",
+              "var checkin = require ('moment');\r",
+              "console.log(checkin);\r",
+              "\r",
+              "var checkindate= checkin().format('YYYY-MM-DD');\r",
+              "console.log(checkindate);\r",
+              "pm.environment.set(\"CInDate\", checkindate);\r",
+              "\r",
+              "// for generate the checkoutdate\r",
+              "var checkout = require ('moment');\r",
+              "console.log(checkout);\r",
+              "\r",
+              "var checkoutdate= checkout().add(4,'d').format('YYYY-MM-DD');\r",
+              "console.log(checkoutdate);\r",
+              "pm.environment.set(\"COutDate\", checkoutdate);\r",
+              "\r",
+              "// for generate the additionalneeds\r",
+              "var additionalneeds= pm.variables.replaceIn (\"{{$randomBsNoun}}\");\r",
+              "pm.environment.set(\"ANeeds\", additionalneeds);\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Asortion for the status code\r",
+              "pm.test(\"Verify that the response Status code is showing 200 or not\", function () { pm.expect(pm.response.code).to.eql(201); });\r",
+              "\r",
+              "// Asortion for the response time\r",
+              "pm.test(\"Verify that the response time is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseTime).to.be.below(2000); });\r",
+              "\r",
+              "// Asortion for the response size\r",
+              "pm.test(\"Verify that the response size is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseSize).to.be.below(1000); });\r",
+              "\r",
+              "// Asortion for the firstname\r",
+              "\r",
+              "pm.test(\"Verify that the firstname is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(pm.environment.get('FName')).to.equal(responseBody.firstname); });\r",
+              "\r",
+              "// Asortion for the lastname\r",
+              "pm.test(\"Verify that the lastname is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(pm.environment.get('LName')).to.equal(responseBody.lastname); });\r",
+              "\r",
+              "// Asortion for the price\r",
+              "pm.test(\"Verify that the price is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(Number(pm.environment.get('CPrice'))).to.equal(Number(responseBody.totalprice)); });\r",
+              "\r",
+              "// Asortion for the depositpaid\r",
+              "pm.test(\"Verify that the depositpaid is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(String(pm.environment.get('TDepositPaid')).toLowerCase() === 'true').to.equal(Boolean(responseBody.depositpaid)); });\r",
+              "\r",
+              "// Assertion for deposit paid\r",
+              "//pm.test(\"Verify that deposit paid is expected or not\", function () {\r",
+              "  //  const expectedDepositPaid =\r",
+              "    //    pm.environment.get(\"TDepositPaid\").toLowerCase() === \"true\";\r",
+              "//\r",
+              "  //  pm.expect(responseBody.depositpaid).to.equal(expectedDepositPaid);\r",
+              "// });\r",
+              "\r",
+              "// Assertion for check-in date\r",
+              "pm.test(\"Verify that the check-in date is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.bookingdates.checkin)\r",
+              "        .to.equal(pm.environment.get(\"CInDate\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for check-out date\r",
+              "pm.test(\"Verify that the check-out date is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.bookingdates.checkout)\r",
+              "       .to.equal(pm.environment.get(\"COutDate\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for the complete booking dates \r",
+              "// pm.test(\"Verify that booking dates are expected or not\", function () {\r",
+              "  //  pm.expect(responseBody.bookingdates).to.deep.equal({\r",
+              "   //     checkin: pm.environment.get(\"CInDate\"),\r",
+              "  //      checkout: pm.environment.get(\"COutDate\")\r",
+              "  //  });\r",
+              "// });\r",
+              "\r",
+              "// Assertion for additional needs\r",
+              "pm.test(\"Verify that additional needs is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.additionalneeds)\r",
+              "        .to.equal(pm.environment.get(\"ANeeds\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for the data format\r",
+              "pm.test(\"Verify that the data format is JSON\", function () \r",
+              "{  \r",
+              "    pm.response.to.be.json; \r",
+              "    \r",
+              "    });"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Cookie",
+            "value": "token={{auth_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"firstname\" : \"{{FName}}\",\r\n    \"lastname\" : \"{{LName}}\",\r\n    \"totalprice\" : {{CPrice}},\r\n    \"depositpaid\" : {{TDepositPaid}},\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"{{CInDate}}\",\r\n        \"checkout\" : \"{{COutDate}}\"\r\n    },\r\n    \"additionalneeds\" : \"{{ANeeds}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/booking/{{My_Booking}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{My_Booking}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetUpdatedBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "\r",
+              "// Asortion for the status code\r",
+              "pm.test(\"Verify that the response Status code is showing 200 or not\", function () { pm.expect(pm.response.code).to.eql(200); });\r",
+              "\r",
+              "// Asortion for the response time\r",
+              "pm.test(\"Verify that the response time is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseTime).to.be.below(2000); });\r",
+              "\r",
+              "// Asortion for the response size\r",
+              "pm.test(\"Verify that the response size is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseSize).to.be.below(1000); });\r",
+              "\r",
+              "// Asortion for the firstname\r",
+              "\r",
+              "pm.test(\"Verify that the firstname is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(pm.environment.get('FName')).to.equal(responseBody.firstname); });\r",
+              "\r",
+              "// Asortion for the lastname\r",
+              "pm.test(\"Verify that the lastname is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(pm.environment.get('LName')).to.equal(responseBody.lastname); });\r",
+              "\r",
+              "// Asortion for the price\r",
+              "pm.test(\"Verify that the price is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(Number(pm.environment.get('CPrice'))).to.equal(Number(responseBody.totalprice)); });\r",
+              "\r",
+              "// Asortion for the depositpaid\r",
+              "pm.test(\"Verify that the depositpaid is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(String(pm.environment.get('TDepositPaid')).toLowerCase() === 'true').to.equal(Boolean(responseBody.depositpaid)); });\r",
+              "\r",
+              "// Assertion for deposit paid\r",
+              "//pm.test(\"Verify that deposit paid is expected or not\", function () {\r",
+              "  //  const expectedDepositPaid =\r",
+              "    //    pm.environment.get(\"TDepositPaid\").toLowerCase() === \"true\";\r",
+              "//\r",
+              "  //  pm.expect(responseBody.depositpaid).to.equal(expectedDepositPaid);\r",
+              "// });\r",
+              "\r",
+              "// Assertion for check-in date\r",
+              "pm.test(\"Verify that the check-in date is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.bookingdates.checkin)\r",
+              "        .to.equal(pm.environment.get(\"CInDate\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for check-out date\r",
+              "pm.test(\"Verify that the check-out date is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.bookingdates.checkout)\r",
+              "       .to.equal(pm.environment.get(\"COutDate\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for the complete booking dates \r",
+              "// pm.test(\"Verify that booking dates are expected or not\", function () {\r",
+              "  //  pm.expect(responseBody.bookingdates).to.deep.equal({\r",
+              "   //     checkin: pm.environment.get(\"CInDate\"),\r",
+              "  //      checkout: pm.environment.get(\"COutDate\")\r",
+              "  //  });\r",
+              "// });\r",
+              "\r",
+              "// Assertion for additional needs\r",
+              "pm.test(\"Verify that additional needs is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.additionalneeds)\r",
+              "        .to.equal(pm.environment.get(\"ANeeds\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for the data format\r",
+              "pm.test(\"Verify that the data format is JSON\", function () \r",
+              "{  \r",
+              "    pm.response.to.be.json; \r",
+              "    \r",
+              "    });"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "packages": {},
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "{{base_url}}/booking/{{My_Booking}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{My_Booking}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PartialUpdateBooking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// for generate the firstname\r",
+              "var firstname= pm.variables.replaceIn (\"{{$randomFirstName}}\");\r",
+              "pm.environment.set(\"FName\", firstname);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "\r",
+              "// Asortion for the status code\r",
+              "pm.test(\"Verify that the response Status code is showing 200 or not\", function () { pm.expect(pm.response.code).to.eql(201); });\r",
+              "\r",
+              "// Asortion for the response time\r",
+              "pm.test(\"Verify that the response time is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseTime).to.be.below(2000); });\r",
+              "\r",
+              "// Asortion for the response size\r",
+              "pm.test(\"Verify that the response size is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseSize).to.be.below(1000); });\r",
+              "\r",
+              "// Asortion for the firstname\r",
+              "\r",
+              "pm.test(\"Verify that the firstname is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(pm.environment.get('FName')).to.equal(responseBody.firstname); });\r",
+              "\r",
+              "// Asortion for the lastname\r",
+              "pm.test(\"Verify that the lastname is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(pm.environment.get('LName')).to.equal(responseBody.lastname); });\r",
+              "\r",
+              "// Asortion for the price\r",
+              "pm.test(\"Verify that the price is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(Number(pm.environment.get('CPrice'))).to.equal(Number(responseBody.totalprice)); });\r",
+              "\r",
+              "// Asortion for the depositpaid\r",
+              "pm.test(\"Verify that the depositpaid is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(String(pm.environment.get('TDepositPaid')).toLowerCase() === 'true').to.equal(Boolean(responseBody.depositpaid)); });\r",
+              "\r",
+              "// Assertion for deposit paid\r",
+              "//pm.test(\"Verify that deposit paid is expected or not\", function () {\r",
+              "  //  const expectedDepositPaid =\r",
+              "    //    pm.environment.get(\"TDepositPaid\").toLowerCase() === \"true\";\r",
+              "//\r",
+              "  //  pm.expect(responseBody.depositpaid).to.equal(expectedDepositPaid);\r",
+              "// });\r",
+              "\r",
+              "// Assertion for check-in date\r",
+              "pm.test(\"Verify that the check-in date is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.bookingdates.checkin)\r",
+              "        .to.equal(pm.environment.get(\"CInDate\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for check-out date\r",
+              "pm.test(\"Verify that the check-out date is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.bookingdates.checkout)\r",
+              "       .to.equal(pm.environment.get(\"COutDate\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for the complete booking dates \r",
+              "// pm.test(\"Verify that booking dates are expected or not\", function () {\r",
+              "  //  pm.expect(responseBody.bookingdates).to.deep.equal({\r",
+              "   //     checkin: pm.environment.get(\"CInDate\"),\r",
+              "  //      checkout: pm.environment.get(\"COutDate\")\r",
+              "  //  });\r",
+              "// });\r",
+              "\r",
+              "// Assertion for additional needs\r",
+              "pm.test(\"Verify that additional needs is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.additionalneeds)\r",
+              "        .to.equal(pm.environment.get(\"ANeeds\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for the data format\r",
+              "pm.test(\"Verify that the data format is JSON\", function () \r",
+              "{  \r",
+              "    pm.response.to.be.json; \r",
+              "    \r",
+              "    });"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Cookie",
+            "value": "token={{auth_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"firstname\": \"{{FName}}\"\r\n    \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/booking/{{My_Booking}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{My_Booking}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetPartialUpdatedBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "\r",
+              "// Asortion for the status code\r",
+              "pm.test(\"Verify that the response Status code is showing 200 or not\", function () { pm.expect(pm.response.code).to.eql(200); });\r",
+              "\r",
+              "// Asortion for the response time\r",
+              "pm.test(\"Verify that the response time is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseTime).to.be.below(2000); });\r",
+              "\r",
+              "// Asortion for the response size\r",
+              "pm.test(\"Verify that the response size is expected or not\", function () \r",
+              "{ pm.expect(pm.response.responseSize).to.be.below(1000); });\r",
+              "\r",
+              "// Asortion for the firstname\r",
+              "\r",
+              "pm.test(\"Verify that the firstname is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(pm.environment.get('FName')).to.equal(responseBody.firstname); });\r",
+              "\r",
+              "// Asortion for the lastname\r",
+              "pm.test(\"Verify that the lastname is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(pm.environment.get('LName')).to.equal(responseBody.lastname); });\r",
+              "\r",
+              "// Asortion for the price\r",
+              "pm.test(\"Verify that the price is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(Number(pm.environment.get('CPrice'))).to.equal(Number(responseBody.totalprice)); });\r",
+              "\r",
+              "// Asortion for the depositpaid\r",
+              "pm.test(\"Verify that the depositpaid is expected or not\", function () \r",
+              "{ var responseBody= pm.response.json();\r",
+              "    pm.expect(String(pm.environment.get('TDepositPaid')).toLowerCase() === 'true').to.equal(Boolean(responseBody.depositpaid)); });\r",
+              "\r",
+              "// Assertion for deposit paid\r",
+              "//pm.test(\"Verify that deposit paid is expected or not\", function () {\r",
+              "  //  const expectedDepositPaid =\r",
+              "    //    pm.environment.get(\"TDepositPaid\").toLowerCase() === \"true\";\r",
+              "//\r",
+              "  //  pm.expect(responseBody.depositpaid).to.equal(expectedDepositPaid);\r",
+              "// });\r",
+              "\r",
+              "// Assertion for check-in date\r",
+              "pm.test(\"Verify that the check-in date is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.bookingdates.checkin)\r",
+              "        .to.equal(pm.environment.get(\"CInDate\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for check-out date\r",
+              "pm.test(\"Verify that the check-out date is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.bookingdates.checkout)\r",
+              "       .to.equal(pm.environment.get(\"COutDate\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for the complete booking dates \r",
+              "// pm.test(\"Verify that booking dates are expected or not\", function () {\r",
+              "  //  pm.expect(responseBody.bookingdates).to.deep.equal({\r",
+              "   //     checkin: pm.environment.get(\"CInDate\"),\r",
+              "  //      checkout: pm.environment.get(\"COutDate\")\r",
+              "  //  });\r",
+              "// });\r",
+              "\r",
+              "// Assertion for additional needs\r",
+              "pm.test(\"Verify that additional needs is expected or not\", function () {\r",
+              "    var responseBody= pm.response.json();\r",
+              "    pm.expect(responseBody.additionalneeds)\r",
+              "        .to.equal(pm.environment.get(\"ANeeds\"));\r",
+              "});\r",
+              "\r",
+              "// Assertion for the data format\r",
+              "pm.test(\"Verify that the data format is JSON\", function () \r",
+              "{  \r",
+              "    pm.response.to.be.json; \r",
+              "    \r",
+              "    });"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "{{base_url}}/booking/{{My_Booking}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{My_Booking}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DeleteBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// 1. Verify status code is 201\r",
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "// 2. Verify response time\r",
+              "pm.test(\"Response time is less than 1000ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+              "});\r",
+              "\r",
+              "// 3. Verify response body is not empty\r",
+              "pm.test(\"Response body is not empty\", function () {\r",
+              "    pm.expect(pm.response.text()).to.not.be.empty;\r",
+              "});\r",
+              "\r",
+              "// 4. Verify response body contains \"Created\"\r",
+              "pm.test('Response body contains \"Created\"', function () {\r",
+              "    pm.expect(pm.response.text()).to.include(\"Created\");\r",
+              "});\r",
+              "\r",
+              "// 5. Verify exact response body\r",
+              "pm.test('Response body is exactly \"Created\"', function () {\r",
+              "    pm.expect(pm.response.text().trim()).to.eql(\"Created\");\r",
+              "});\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Cookie",
+            "value": "token={{auth_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "{{base_url}}/booking/{{My_Booking}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{My_Booking}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetDeletedBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// 1. Verify status code is 404\r",
+              "pm.test(\"Status code is 404\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "\r",
+              "// 2. Verify response time\r",
+              "pm.test(\"Response time is less than 2000ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+              "});\r",
+              "\r",
+              "// 3. Verify response body is not empty\r",
+              "pm.test(\"Response body is not empty\", function () {\r",
+              "    pm.expect(pm.response.text()).to.not.be.empty;\r",
+              "});\r",
+              "\r",
+              "\r",
+              "// 4. Verify response body contains Not Found\r",
+              "pm.test('Response body contains \"Not Found\"', function () {\r",
+              "    pm.expect(pm.response.text()).to.include(\"Not Found\");\r",
+              "});\r",
+              "\r",
+              "// 5. Verify exact response message\r",
+              "pm.test('Response body is exactly \"Not Found\"', function () {\r",
+              "    pm.expect(pm.response.text().trim()).to.eql(\"Not Found\");\r",
+              "});\r",
+              "\r",
+              "// 6. Verify request handled correctly\r",
+              "pm.test(\"Deleted booking cannot be retrieved\", function () {\r",
+              "    pm.expect(pm.response.code).to.eql(404);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Cookie",
+            "value": "token={{auth_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "{{base_url}}/booking/{{My_Booking}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{My_Booking}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
