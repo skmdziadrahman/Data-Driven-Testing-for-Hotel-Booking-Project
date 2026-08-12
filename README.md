@@ -273,9 +273,9 @@ This project demonstrates practical experience with:
 
 ## Author
 
-**Ziad Rahman**
+**Sk Md Ziad Rahman**
 
-QA / Software Testing Portfolio Project
+QA Portfolio Project
 
 ## Acknowledgement
 
