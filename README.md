@@ -1,3 +1,5 @@
+<img width="565" height="592" alt="image" src="https://github.com/user-attachments/assets/8173fe3e-3bd2-40fb-965f-533f495e7ad3" />
+
 # Data-Driven-Testing-for-Hotel-Booking-Project
 Postman API automation project demonstrating data-driven testing of a hotel booking workflow using CSV, JavaScript, Newman, and GitHub Actions.
 
